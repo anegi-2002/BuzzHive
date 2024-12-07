@@ -15,21 +15,29 @@ spring:
         show-sql: 'true'
     application:
         name: BuzzHive
-    web:
-        resources:
-            static-locations: file:uploads/
     flyway:
         enabled: true
 #        locations: classpath:db/migration
-#        schemas: buzzhive_schema
+        default-schema: buzzhive_schema
 
 server:
     port: 5010
+cloud:
+    aws:
+        credential:
+            access-key: ${AWS_ACCESS_KEY}
+            secret-key: ${AWS_SECRET_KEY}
+        region:
+            static: ap-south-1
+        stack:
+            auto: 'false'
+app:
+    s3:
+        bucket: ${AWS_BUCKET_NAME}
 
 logging:
     level:
         org:
             flywaydb: DEBUG
-
 
 

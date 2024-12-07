@@ -1,0 +1,5 @@
+config:
+  data:
+    AWS_ACCESS_KEY: ACCESS_KEY
+    AWS_SECRET_KEY: SECRET_KEY
+    AWS_BUCKET_NAME: socio-verse-bucket

@@ -2,17 +2,20 @@ package com.socialMedia.BuzzHive.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Data;
 
-
+@Table(name = "users", schema = "buzzhive_schema")
 @Entity
+@Data
 public class Users {
     @Id
-    private int id;
+    private long id;
     private String username;
     private String type;
     private String password;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

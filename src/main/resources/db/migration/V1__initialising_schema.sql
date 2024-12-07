@@ -1,4 +1,4 @@
-CREATE SCHEMA buzzhive_schema;
+CREATE SCHEMA IF NOT EXISTS buzzhive_schema;
 CREATE TABLE buzzhive_schema.posts (
 id SERIAL PRIMARY KEY,
     post_id  VARCHAR(255) UNIQUE NOT NULL,         -- Unique identifier for each post
