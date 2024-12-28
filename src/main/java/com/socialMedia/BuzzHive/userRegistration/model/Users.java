@@ -1,8 +1,6 @@
-package com.socialMedia.BuzzHive.model;
+package com.socialMedia.BuzzHive.userRegistration.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Table(name = "users", schema = "buzzhive_schema")
@@ -10,10 +8,12 @@ import lombok.Data;
 @Data
 public class Users {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String username;
     private String type;
     private String password;
+    private String user_id;
 
     public long getId() {
         return id;
@@ -45,6 +45,14 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     @Override

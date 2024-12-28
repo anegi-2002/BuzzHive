@@ -1,4 +1,4 @@
-package com.socialMedia.BuzzHive.model;
+package com.socialMedia.BuzzHive.userRegistration.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import javax.crypto.KeyGenerator;
@@ -14,33 +16,43 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JWTService {
-    private String secretKey="";
-
+    @Value("${jwt.secret.key}")
+    private String secretKey;
+    private static final String TOKEN = "token";
+    private static final String EXPIRATION = "expiration";
     public JWTService(){
-        try {
-            KeyGenerator keyGen=KeyGenerator.getInstance("HmacSHA256");
-            SecretKey SK=keyGen.generateKey();
-            secretKey= Base64.getEncoder().encodeToString(SK.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            KeyGenerator keyGen=KeyGenerator.getInstance("HmacSHA256");
+//            SecretKey SK=keyGen.generateKey();
+//            secretKey= Base64.getEncoder().encodeToString(SK.getEncoded());
+//        } catch (NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
-    public String generateToken(String Username) {
+    public Map<String,Object> generateToken(String username, Authentication authentication) {
         Map<String,Object> claims=new HashMap<>();
-        return Jwts.builder()
+        Map<String,Object> tokenInfo = new HashMap<>();
+        claims.put("username",username);
+        claims.put("roles",authentication.getAuthorities().stream().collect(Collectors.toList()));
+        long currentTimeInMillisSecond = System.currentTimeMillis();
+        long expirationTimeInMillisSecond = currentTimeInMillisSecond + 60*60*30*1000 ;
+        String token = Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(Username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+60*60*30))
+                .subject(username)
+                .issuedAt(new Date(currentTimeInMillisSecond))
+                .expiration(new Date(expirationTimeInMillisSecond))
                 .and()
                 .signWith(getKey())
                 .compact(); //30 minutes
-
+        tokenInfo.put(TOKEN,token);
+        tokenInfo.put(EXPIRATION,expirationTimeInMillisSecond);
+        return tokenInfo;
     }
 
     private SecretKey getKey() {

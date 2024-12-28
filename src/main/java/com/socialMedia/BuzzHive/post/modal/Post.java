@@ -15,7 +15,9 @@ public class Post {
     private Long id;
 
     private String text_content;
+    @Column(name = "post_id")
     private String post_id;
+    @Column(name = "user_id")
     private String user_id;
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

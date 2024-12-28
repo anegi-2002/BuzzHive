@@ -1,8 +1,8 @@
 package com.socialMedia.BuzzHive.service;
 
-import com.socialMedia.BuzzHive.model.UserPrincipal;
-import com.socialMedia.BuzzHive.model.Users;
-import com.socialMedia.BuzzHive.repo.UserRepo;
+import com.socialMedia.BuzzHive.userRegistration.model.UserPrincipal;
+import com.socialMedia.BuzzHive.userRegistration.model.Users;
+import com.socialMedia.BuzzHive.userRegistration.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

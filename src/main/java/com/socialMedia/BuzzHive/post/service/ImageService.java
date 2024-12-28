@@ -37,4 +37,7 @@ public class ImageService {
         return filePath;
 
     }
+    public ArrayList<Image> getImageDataForParticularPost(String postId){
+       return imageRepo.getDataForParticularPost(postId);
+    }
 }

@@ -11,4 +11,12 @@ public class GlobalExceptionHandler {
     ResponseEntity<ExceptionResponse> handleOrderNotFoundException(ImageUploadException notFoundException){
         return new ResponseEntity(new ExceptionResponse(notFoundException.getMessage()), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(PostNotFoundException.class)
+    ResponseEntity<ExceptionResponse> handleOrderNotFoundException(PostNotFoundException notFoundException){
+        return new ResponseEntity(new ExceptionResponse(notFoundException.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(UserNotFoundException.class)
+    ResponseEntity<ExceptionResponse> handleOrderNotFoundException(UserNotFoundException notFoundException){
+        return new ResponseEntity(new ExceptionResponse(notFoundException.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }

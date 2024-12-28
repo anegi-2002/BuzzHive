@@ -31,5 +31,8 @@ public class ImageValidation {
             validateFile(file);
         }
     }
+    public static boolean checkImageExpiryUrl(){
+        return false;
+    }
 }
 

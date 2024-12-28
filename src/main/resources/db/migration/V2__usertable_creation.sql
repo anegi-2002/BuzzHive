@@ -1,0 +1,6 @@
+CREATE TABLE buzzhive_schema.users (
+id SERIAL PRIMARY KEY,
+type VARCHAR(255) NOT NULL,
+username  VARCHAR(255) NOT NULL,
+password  VARCHAR(255) NOT NULL
+);
