@@ -10,10 +10,11 @@ import com.socialMedia.BuzzHive.utils.ImageValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -25,6 +26,8 @@ public class PostService {
     private ImageService imageService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private S3ImageUploader s3ImageUploader;
 
     public PostDTO createPost(ArrayList<MultipartFile> file,String postcontent,String user_id) throws Exception {
         if(file!=null && !file.isEmpty())
@@ -47,19 +50,33 @@ public class PostService {
     }
 
     public PostDTO getDetailsOfPost(String postId) throws PostNotFoundException {
+
         Post postDetails = postsRepo.findByPost_id(postId);
 
         if (postDetails == null) {
             throw new PostNotFoundException("Post not found with postId: " + postId);
         }
+        try {
+            List<Image> imageData = imageService.getImageDataForParticularPost(postId);
+            ArrayList<String> imageUrls =  getImagePreSignedUrl(imageData);
+            return new PostDTO(postDetails.getText_content(), postDetails.getPost_id(), imageUrls);
+        } catch (Exception e) {
+            throw new PostNotFoundException("Error while fetching the data");
+        }
+    }
 
-        List<Image> imageData = imageService.getImageDataForParticularPost(postId);
-        ArrayList<String> imageUrls = (imageData != null) ? imageData.stream()
-                .map(Image::getImage_path)
-                .collect(Collectors.toCollection(ArrayList::new))
-                : new ArrayList<>();
-
-        return new PostDTO(postDetails.getText_content(), postDetails.getPost_id(), imageUrls);
+    public ArrayList<String> getImagePreSignedUrl(List<Image> imageData){
+        ArrayList<String> imageUrls = new ArrayList<>();
+        imageData.forEach(image -> {
+            if (image.getUploaded_at().toInstant().isAfter(Instant.now().minus(Duration.ofDays(7)))) {
+                imageUrls.add(image.getImage_path());
+            } else {
+                String preSignedNewUrl = s3ImageUploader.preSignedUrl(image.getFile_name());
+                imageUrls.add(preSignedNewUrl);
+                imageService.updateImageUrl(image.getId(), preSignedNewUrl);
+            }
+        });
+        return imageUrls;
     }
     public ArrayList<PostDTO> getUsersAllPost(String userID) {
         ArrayList<Post> postDetails = postsRepo.findByUserId(userID);
@@ -67,11 +84,7 @@ public class PostService {
         if(postDetails!=null && !postDetails.isEmpty()){
             for(Post postData:postDetails) {
                 List<Image> imageData = imageService.getImageDataForParticularPost(postData.getPost_id());
-                ArrayList<String> imageUrls = (imageData != null) ? imageData.stream()
-                        .map(Image::getImage_path)
-                        .collect(Collectors.toCollection(ArrayList::new))
-                        : new ArrayList<>();
-
+                ArrayList<String> imageUrls =  getImagePreSignedUrl(imageData);
                 allPostDetails.add(new PostDTO(postData.getText_content(), postData.getPost_id(), imageUrls));
             }
         }

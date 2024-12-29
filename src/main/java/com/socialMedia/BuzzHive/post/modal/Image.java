@@ -12,9 +12,7 @@ import java.sql.Timestamp;
 @Entity
 @Data
 @Builder
-
 @AllArgsConstructor
-
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +20,8 @@ public class Image {
     private long id;
     private String post_id;
     private String image_path;
+    private String file_name;
+
     @Column(name = "uploaded_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp uploaded_at;
 

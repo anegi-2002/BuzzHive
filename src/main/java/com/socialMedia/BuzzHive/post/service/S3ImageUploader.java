@@ -29,16 +29,15 @@ public class S3ImageUploader implements ImageUploadService{
     private String bucketName;
 
     @Override
-    public String upload(MultipartFile file) throws ImageUploadException {
-        String actualFileName = file.getOriginalFilename();
-        String newFileName = UUID.randomUUID().toString()+ actualFileName.substring(actualFileName.lastIndexOf("."));
+    public String upload(MultipartFile file, String filename) throws ImageUploadException {
+
         ObjectMetadata objectMetadata= new ObjectMetadata();
         objectMetadata.setContentLength(file.getSize());
         try {
-            PutObjectResult putObjectResult = client.putObject(new PutObjectRequest(bucketName,newFileName,file.getInputStream(),objectMetadata));
-            return preSignedUrl(newFileName);
+            PutObjectResult putObjectResult = client.putObject(new PutObjectRequest(bucketName,filename,file.getInputStream(),objectMetadata));
+            return preSignedUrl(filename);
         } catch (IOException e) {
-            throw new ImageUploadException("Failed to upload image"+actualFileName);
+            throw new ImageUploadException("Failed to upload image"+filename);
         }
 
     }

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ImageUploadService {
-    String upload(MultipartFile file) throws IOException, ImageUploadException;
+    String upload(MultipartFile file,String filename) throws IOException, ImageUploadException;
     String preSignedUrl(String filename);
     List<String> allfiles();
 }
